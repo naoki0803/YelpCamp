@@ -1,0 +1,58 @@
+<% layout("layouts/boilerplate")%>
+
+<div class="row">
+    <h1 class="text-center">キャンプ場の新規登録</h1>
+    <div class="offset-3 col-6">
+
+        <!-- formからPOSTされる情報を、ejsで扱うようにするためには、以下を実行して値をパースする必要がある。
+        app.use(express.urlencoded({ extended: true })); 
+        app.use(express.json()); //jsonデータをパスしてくれる記述
+        -->
+        <form action="/campgrounds" , method="POST">
+            <div class="mb-3">
+                <label class="form-label" for="title">キャンプ場名</label>
+                <input class="form-control" type="text" name="campground[title]" id="title">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label" for="location">場所</label>
+                <input class="form-control" type="text" name="campground[location]" id="location">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label" for="image">画像URL</label>
+                <input class="form-control" type="text" name="campground[image]" id="image">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label" for="price">価格</label>
+                <div class="input-group">
+                    <span class="input-group-text" id="price-label">¥</span>
+                    <input type="text" class="form-control" id="price" aria-label="価格"
+                        aria-describedby="price-label" name="campground[price]">
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label" for="description">キャンプ場の説明</label>
+                <textarea class="form-control" name="campground[description]" id="" cols="30" rows="5"></textarea>
+            </div>
+
+            <!-- <label for="pet-select">住所</label>
+            <select name="pets" id="pet-select">
+                <option value="">--Please choose an option--</option>
+                <option value="dog">Dog</option>
+                <option value="cat">Cat</option>
+                <option value="hamster">Hamster</option>
+                <option value="parrot">Parrot</option>
+                <option value="spider">Spider</option>
+                <option value="goldfish">Goldfish</option>
+            </select> -->
+            <div class="mb-3">
+                <button class="btn btn-success" type="submit">登録</button>
+            </div>
+
+        </form>
+        <a href="/campgrounds">一覧に戻る</a>
+    </div>
+</div>
