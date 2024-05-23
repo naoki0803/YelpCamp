@@ -1,9 +1,7 @@
 const express = require("express"); //要npm i ejs
 const app = express();
 const axios = require('axios');
-require('dotenv').config();  //.env ファイルを読み込むために、dotenv 
-
-
+require('dotenv').config();  //.env ファイルを読み込むために、dotenv
 
 const path = require("path");
 const mongoose = require("mongoose");
@@ -12,6 +10,7 @@ const ejsMate = require("ejs-mate")
 const Campground = require("./models/campground");
 const methodOverride = require("method-override");
 
+const catchAsync = require("./utils/catchAsync");
 //'mongodb://127.0.0.1:27017/<DBの場所をここで指定できるので、以下の場合movieAppというディレクトリに保存される>>
 mongoose.connect('mongodb://127.0.0.1:27017/yelp-camp',
     { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true })
@@ -69,36 +68,41 @@ app.get("/campgrounds/new", (req, res) => {
     res.render("campgrounds/new")
 });
 
-app.post("/campgrounds", async (req, res) => {
-    const campground = new Campground(req.body.campground);
-    await campground.save();
-    res.redirect(`/campgrounds/${campground._id}`);
-});
+app.post("/campgrounds", catchAsync(async (req, res, next) => {
+        const campground = new Campground(req.body.campground);
+        await campground.save();
+        res.redirect(`/campgrounds/${campground._id}`);
+}));
 
 
 //詳細ページ
-app.get("/campgrounds/:id", async (req, res) => {
+app.get("/campgrounds/:id", catchAsync(async (req, res) => {
     const campground = await Campground.findById(req.params.id);
     res.render("campgrounds/show", { campground })
-});
+}));
 
 //編集ページ
-app.get("/campgrounds/:id/edit", async (req, res) => {
+app.get("/campgrounds/:id/edit", catchAsync(async (req, res) => {
     const campground = await Campground.findById(req.params.id);
     res.render("campgrounds/edit", { campground })
-});
+}));
 
-app.put("/campgrounds/:id", async (req, res) => {
+app.put("/campgrounds/:id", catchAsync(async (req, res) => {
     const { id } = req.params
     const campground = await Campground.findByIdAndUpdate(id, { ...req.body.campground }, { useFindAndModify: false })
     res.redirect(`/campgrounds/${campground._id}`);
-});
+}));
 
 //削除
-app.delete("/campgrounds/:id", async (req, res) => {
+app.delete("/campgrounds/:id", catchAsync(async (req, res) => {
     const { id } = req.params
     const campground = await Campground.findByIdAndDelete(id);
     res.redirect("/campgrounds");
+}));
+
+//エラーハンドリング
+app.use((err, req, res, next) => {
+    res.send("問題がおきました");
 });
 
 //サーバ接続
