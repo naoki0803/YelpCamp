@@ -111,8 +111,11 @@ app.all('*', (req, res, next) => {
 
 //エラーハンドリング
 app.use((err, req, res, next) => {
-    const { statusCode = 500, message = "問題がみつかりました"} = err;
-    res.status(statusCode).send(message);
+    const { statusCode = 500} = err;
+    if(!err.message) {
+        err.message = '問題が置きました';
+    }
+    res.status(statusCode).render('error', { err })
 });
 
 //サーバ接続
