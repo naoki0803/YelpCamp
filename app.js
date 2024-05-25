@@ -11,6 +11,8 @@ const Campground = require("./models/campground");
 const methodOverride = require("method-override");
 
 const catchAsync = require("./utils/catchAsync");
+const ExpressError = require("./utils/ExpressError");
+
 //'mongodb://127.0.0.1:27017/<DBの場所をここで指定できるので、以下の場合movieAppというディレクトリに保存される>>
 mongoose.connect('mongodb://127.0.0.1:27017/yelp-camp',
     { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true })
@@ -68,10 +70,13 @@ app.get("/campgrounds/new", (req, res) => {
     res.render("campgrounds/new")
 });
 
-app.post("/campgrounds", catchAsync(async (req, res, next) => {
-        const campground = new Campground(req.body.campground);
-        await campground.save();
-        res.redirect(`/campgrounds/${campground._id}`);
+app.post("/campgrounds", catchAsync(async (req, res) => {
+    if(!req.body.Campgroundf){ 
+        throw new ExpressError('不正なキャンプ場のデータです', 400);
+    }
+    const campground = new Campground(req.body.campground);
+    await campground.save();
+    res.redirect(`/campgrounds/${campground._id}`);
 }));
 
 
@@ -100,9 +105,14 @@ app.delete("/campgrounds/:id", catchAsync(async (req, res) => {
     res.redirect("/campgrounds");
 }));
 
+app.all('*', (req, res, next) => {
+    next(new ExpressError("ページが見つかりませんでした。", 404));
+});
+
 //エラーハンドリング
 app.use((err, req, res, next) => {
-    res.send("問題がおきました");
+    const { statusCode = 500, message = "問題がみつかりました"} = err;
+    res.status(statusCode).send(message);
 });
 
 //サーバ接続
