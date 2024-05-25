@@ -6,6 +6,7 @@ require('dotenv').config();  //.env ファイルを読み込むために、doten
 const path = require("path");
 const mongoose = require("mongoose");
 const ejsMate = require("ejs-mate")
+const Joi = require('joi');
 
 const Campground = require("./models/campground");
 const methodOverride = require("method-override");
@@ -71,9 +72,19 @@ app.get("/campgrounds/new", (req, res) => {
 });
 
 app.post("/campgrounds", catchAsync(async (req, res) => {
-    if(!req.body.Campgroundf){ 
-        throw new ExpressError('不正なキャンプ場のデータです', 400);
+    // if(!req.body.Campgroundf){ throw new ExpressError('不正なキャンプ場のデータです', 400);  }
+    const campgroundSchema = Joi.object({
+        campground: Joi.object({
+            title: Joi.string().required(),
+            price: Joi.number().required().min(0)
+        }).required()
+    });
+    const { error } = campgroundSchema.validate(req.body);
+    if (error) { 
+        const msg = error.details.map(detail => detail.message).join(',');
+        throw new ExpressError(msg, 400);
     }
+
     const campground = new Campground(req.body.campground);
     await campground.save();
     res.redirect(`/campgrounds/${campground._id}`);
