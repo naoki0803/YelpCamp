@@ -6,7 +6,7 @@ require('dotenv').config();  //.env ファイルを読み込むために、doten
 const path = require("path");
 const mongoose = require("mongoose");
 const ejsMate = require("ejs-mate");
-const Joi = require('joi');
+// const Joi = require('joi');
 const { campgroundSchema } = require('./schemas');
 
 const Campground = require("./models/campground");
