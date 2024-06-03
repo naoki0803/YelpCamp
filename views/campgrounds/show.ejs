@@ -41,5 +41,9 @@
             </div>
             <button class="btn btn-success">投稿する</button>
         </form>
+        <% for (let review of campground.reviews){ %>
+            <p>評価:<%= review.raiting %></p>
+            <p>コメント:<%= review.body %></p>
+        <% } %>
     </div>
 </div>
