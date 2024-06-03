@@ -1,5 +1,5 @@
 const mongoose = require("mongoose")
-const schema = mongoose.Schema;
+const {Schema} = mongoose;
 
 
 const campgroundSchema = new schema({
@@ -7,7 +7,13 @@ const campgroundSchema = new schema({
     image: String,
     price: Number,
     description: String,
-    location: String
+    location: String,
+    reviews: [
+        {
+            type: Schema.Types.ObjectID,
+            ref: 'Review'
+        }
+    ]
 });
 
 
