@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const {Schema} = mongoose;
 
-const reviewSchema = new Svhema({
+const reviewSchema = new Schema({
     body: String,
     rating: Numver
 });
