@@ -15,6 +15,7 @@ const methodOverride = require("method-override");
 const catchAsync = require("./utils/catchAsync");
 const ExpressError = require("./utils/ExpressError");
 const Review = require('./models/review');
+const review = require("./models/review");
 
 //'mongodb://127.0.0.1:27017/<DBの場所をここで指定できるので、以下の場合movieAppというディレクトリに保存される>>
 mongoose.connect('mongodb://127.0.0.1:27017/yelp-camp',
@@ -37,7 +38,7 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(methodOverride("_method"))
 
-const validateCampground =(req, res, next) => {
+const validateCampground = (req, res, next) => {
     // const campgroundSchema = Joi.object({
     //     campground: Joi.object({
     //         title: Joi.string().required(),
@@ -45,7 +46,7 @@ const validateCampground =(req, res, next) => {
     //     }).required()
     // });
     const { error } = campgroundSchema.validate(req.body);
-    if (error) { 
+    if (error) {
         const msg = error.details.map(detail => detail.message).join(',');
         throw new ExpressError(msg, 400);
     } else {
@@ -56,7 +57,7 @@ const validateCampground =(req, res, next) => {
 
 const validateReview = (req, res, next) => {
     const { error } = reviewSchema.validate(req.body);
-    if (error) { 
+    if (error) {
         const msg = error.details.map(detail => detail.message).join(',');
         throw new ExpressError(msg, 400);
     } else {
@@ -144,14 +145,23 @@ app.post("/campgrounds/:id/reviews", validateReview, catchAsync(async (req, res)
     res.redirect(`/campgrounds/${campground._id}`);
 }));
 
+app.delete(`/campgrounds/:id/reviews/:reviewId`, catchAsync(async (req, res) => {
+    const { id, reviewId } = req.params;
+    await Campground.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
+    await Review.findByIdAndDelete(reviewId);
+    // Review.findById
+    res.redirect(`/campgrounds/${id}`)
+    res.send('削除', req.body);
+}))
+
 app.all('*', (req, res, next) => {
     next(new ExpressError("ページが見つかりませんでした。", 404));
 });
 
 //エラーハンドリング
 app.use((err, req, res, next) => {
-    const { statusCode = 500} = err;
-    if(!err.message) {
+    const { statusCode = 500 } = err;
+    if (!err.message) {
         err.message = '問題が置きました';
     }
     res.status(statusCode).render('error', { err })

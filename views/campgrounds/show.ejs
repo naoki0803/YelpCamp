@@ -48,6 +48,9 @@
                 <div class="card-body">
                     <h5 class="card-title">評価:<%= review.raiting %></h5>
                     <p class="card-text">コメント:<%= review.body %></p>
+                    <form action="/campgrounds/<%= campground._id %>/reviews/<%= review._id %>?_method=DELETE" method="POST">
+                        <button class="btn btn-sm btn-danger">削除する</button>
+                    </form>
                 </div> 
             </div>
         <% } %>
