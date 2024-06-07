@@ -1,5 +1,7 @@
+const { func } = require("joi");
 const mongoose = require("mongoose")
-const {Schema} = mongoose;
+const { Schema } = mongoose;
+const Review = require('./review');
 
 
 const campgroundSchema = new Schema({
@@ -7,7 +9,7 @@ const campgroundSchema = new Schema({
     image: String,
     price: Number,
     description: String,
-    location: String, 
+    location: String,
     reviews: [
         {
             type: Schema.Types.ObjectID,
@@ -16,6 +18,18 @@ const campgroundSchema = new Schema({
     ]
 });
 
+campgroundSchema.post('findOneAndDelete', async function (doc) {
+    if (doc) {
+        await Review.deleteMany({
+            _id: {
+                $in: doc.reviews
+            }
+        }
+        )
+    }
+
+
+})
 
 
 module.exports = mongoose.model("Campground", campgroundSchema); //モデル名は単数系で先頭を大文字にする。第二引数にはスキーマを渡す
