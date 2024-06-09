@@ -15,7 +15,7 @@ const methodOverride = require("method-override");
 const catchAsync = require("./utils/catchAsync");
 const ExpressError = require("./utils/ExpressError");
 const Review = require('./models/review');
-const review = require("./models/review");
+const campgroundRoutes = require('./routes/campgrounds');
 
 //'mongodb://127.0.0.1:27017/<DBの場所をここで指定できるので、以下の場合movieAppというディレクトリに保存される>>
 mongoose.connect('mongodb://127.0.0.1:27017/yelp-camp',
@@ -87,54 +87,7 @@ app.get("/", async (req, res) => {
     res.render("home", { imageUrl });
 });
 
-//一覧ページ
-app.get("/campgrounds", async (req, res) => {
-    const campgrounds = await Campground.find({})
-    res.render("campgrounds/index", { campgrounds })
-});
-
-
-//新規登録ページ
-// formからPOSTされる情報を、ejsで扱うようにするためには、以下を実行して値をパースする必要がある。 
-// app.use(express.urlencoded({ extended: true })); 
-// app.use(express.json()); //jsonデータをパスしてくれる記述
-app.get("/campgrounds/new", (req, res) => {
-    res.render("campgrounds/new")
-});
-
-app.post("/campgrounds", validateCampground, catchAsync(async (req, res) => {
-    // if(!req.body.Campgroundf){ throw new ExpressError('不正なキャンプ場のデータです', 400);  }
-
-    const campground = new Campground(req.body.campground);
-    await campground.save();
-    res.redirect(`/campgrounds/${campground._id}`);
-}));
-
-
-//詳細ページ
-app.get("/campgrounds/:id", catchAsync(async (req, res) => {
-    const campground = await Campground.findById(req.params.id).populate('reviews');
-    res.render("campgrounds/show", { campground })
-}));
-
-//編集ページ
-app.get("/campgrounds/:id/edit", catchAsync(async (req, res) => {
-    const campground = await Campground.findById(req.params.id);
-    res.render("campgrounds/edit", { campground })
-}));
-
-app.put("/campgrounds/:id", validateCampground, catchAsync(async (req, res) => {
-    const { id } = req.params
-    const campground = await Campground.findByIdAndUpdate(id, { ...req.body.campground }, { useFindAndModify: false })
-    res.redirect(`/campgrounds/${campground._id}`);
-}));
-
-//削除
-app.delete("/campgrounds/:id", catchAsync(async (req, res) => {
-    const { id } = req.params
-    const campground = await Campground.findByIdAndDelete(id);
-    res.redirect("/campgrounds");
-}));
+app.use('/campgrounds', campgroundRoutes);
 
 app.post("/campgrounds/:id/reviews", validateReview, catchAsync(async (req, res) => {
     const campground = await Campground.findById(req.params.id);
