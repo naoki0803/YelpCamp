@@ -13,10 +13,11 @@ const ExpressError = require("./utils/ExpressError");
 
 const campgroundRoutes = require('./routes/campgrounds');
 const reviewRoutes = require('./routes/reviews');
+const exp = require("constants");
 
 //'mongodb://127.0.0.1:27017/<DBの場所をここで指定できるので、以下の場合movieAppというディレクトリに保存される>>
 mongoose.connect('mongodb://127.0.0.1:27017/yelp-camp',
-    { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true })
+    { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false })
     .then(() => {
         console.log("コネクション成功！！");
     })
@@ -34,6 +35,7 @@ app.engine("ejs", ejsMate)
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(methodOverride("_method"))
+app.use(express.static(path.join(__dirname, "public")));
 
 // Unsplash APIリクエスト用の関数
 const fetchRandomImage = async () => {
