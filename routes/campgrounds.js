@@ -20,7 +20,7 @@ const validateCampground = (req, res, next) => {
     }
 }
 
-//一覧ページ
+//一覧ページ 
 router.get("/", async (req, res) => {
     const campgrounds = await Campground.find({})
     res.render("campgrounds/index", { campgrounds })
@@ -28,7 +28,7 @@ router.get("/", async (req, res) => {
 
 
 //新規登録ページ
-// formからPOSTされる情報を、ejsで扱うようにするためには、以下を実行して値をパースする必要がある。 
+// formからPOSTされる情報を、ejsで扱うようにするためには、以下を実行して値をパースする必要がある。  
 // app.use(express.urlencoded({ extended: true })); 
 // app.use(express.json()); //jsonデータをパスしてくれる記述
 router.get("/new", (req, res) => {
@@ -36,7 +36,7 @@ router.get("/new", (req, res) => {
 });
 
 router.post("/", validateCampground, catchAsync(async (req, res) => {
-    // if(!req.body.Campgroundf){ throw new ExpressError('不正なキャンプ場のデータです', 400);  }
+    // if(!req.body.Campgroundf){ throw new ExpressError('不正なキャンプ場のデータです', 400);  } 
 
     const campground = new Campground(req.body.campground);
     await campground.save();

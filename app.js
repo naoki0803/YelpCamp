@@ -59,7 +59,7 @@ app.get("/", async (req, res) => {
 
 //router
 app.use('/campgrounds', campgroundRoutes);
-app.use('/campgrounds/:id/reviews', reviewRoutes);  //:idがあっても、reviews.jsでrouterを定義する際の引数にmergeParamsをtrueで記載が必要
+app.use('/campgrounds/:id/reviews', reviewRoutes);  //:idがあっても、reviews.jsでrouterを定義する際の引数にmergeParamsをtrueで記載が必要 
 
 //
 app.all('*', (req, res, next) => {

@@ -1,5 +1,5 @@
 const express = require('express');
-const router = express.Router({ mergeParams: true });   //mergeParamsを記載することで、router内でも、req.paramsを受け取る事ができる
+const router = express.Router({ mergeParams: true });   //mergeParamsを記載することで、router内でも、req.paramsを受け取る事ができる. 
 const catchAsync = require("../utils/catchAsync");
 const ExpressError = require("../utils/ExpressError");
 const Campground = require("../models/campground");
