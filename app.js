@@ -1,23 +1,25 @@
 const express = require("express"); //要npm i ejs
-const app = express();
 const axios = require('axios');
 require('dotenv').config();  //.env ファイルを読み込むために、dotenv
 
 const path = require("path");
 const mongoose = require("mongoose");
 const ejsMate = require("ejs-mate");
-const methodOverride = require("method-override");
+const session = require('express-session')
 
 const Joi = require('joi');
 const ExpressError = require("./utils/ExpressError");
+const methodOverride = require("method-override");
 
 const campgroundRoutes = require('./routes/campgrounds');
 const reviewRoutes = require('./routes/reviews');
 const exp = require("constants");
+const { truncate } = require("fs");
 
 //'mongodb://127.0.0.1:27017/<DBの場所をここで指定できるので、以下の場合movieAppというディレクトリに保存される>>
 mongoose.connect('mongodb://127.0.0.1:27017/yelp-camp',
-    { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false })
+    { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true }
+)
     .then(() => {
         console.log("コネクション成功！！");
     })
@@ -26,16 +28,36 @@ mongoose.connect('mongodb://127.0.0.1:27017/yelp-camp',
         console.log("MongoDBコネクションエラー");
     });
 
-//”getpost.ejs"のformからpostされたデータをパースしてくれる記述
-//app.postのreq.bodyで中身を確認する為には、送られてくる情報をパースする必要がある
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json()); //jsonデータをパスしてくれる記述
+
+const app = express();
 
 app.engine("ejs", ejsMate)
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
+
+//”getpost.ejs"のformからpostされたデータをパースしてくれる記述
+//app.postのreq.bodyで中身を確認する為には、送られてくる情報をパースする必要がある
+app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"))
 app.use(express.static(path.join(__dirname, "public")));
+
+const sessionConfig = {
+    secret: 'mysecret',
+    resave: false,
+    saveUninitialized: true,
+        cookie: {
+            httpOnly: true,
+            maxAge: 1000 * 60 * 60 * 24 * 7 //1week
+    }
+
+}
+
+app.use(session(sessionConfig));
+
+app.use(express.json()); //jsonデータをパスしてくれる記述
+
+
+
 
 // Unsplash APIリクエスト用の関数
 const fetchRandomImage = async () => {
