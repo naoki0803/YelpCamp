@@ -59,6 +59,7 @@ router.get("/:id/edit", catchAsync(async (req, res) => {
 router.put("/:id", validateCampground, catchAsync(async (req, res) => {
     const { id } = req.params
     const campground = await Campground.findByIdAndUpdate(id, { ...req.body.campground }, { useFindAndModify: false })
+    req.flash('success', 'キャンプ場を更新しました');
     res.redirect(`/campgrounds/${campground._id}`);
 }));
 
@@ -66,6 +67,7 @@ router.put("/:id", validateCampground, catchAsync(async (req, res) => {
 router.delete("/:id", catchAsync(async (req, res) => {
     const { id } = req.params
     const campground = await Campground.findByIdAndDelete(id);
+    req.flash('success', 'キャンプ場を削除しました');
     res.redirect("/campgrounds");
 }));
 

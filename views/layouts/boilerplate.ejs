@@ -13,7 +13,7 @@
     <%- include("../partials/navbar")%>
     <main class="container mt-5">
         <!-- html escapeをするために< %のあとに -(ハイフン)を」つけてあげる必要がある。 -->
-        <%= success %> 
+        <%- include("../partials/flash")%>
         <%- body %>
     </main>
 
