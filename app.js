@@ -6,6 +6,7 @@ const path = require("path");
 const mongoose = require("mongoose");
 const ejsMate = require("ejs-mate");
 const session = require('express-session')
+const flash = require('connect-flash');
 
 const Joi = require('joi');
 const ExpressError = require("./utils/ExpressError");
@@ -49,10 +50,14 @@ const sessionConfig = {
             httpOnly: true,
             maxAge: 1000 * 60 * 60 * 24 * 7 //1week
     }
-
 }
-
 app.use(session(sessionConfig));
+app.use(flash());
+app.use((req, res, next) => {
+    res.locals.success = req.flash('success'); 
+    res.locals.error = req.flash('error'); 
+    next();
+})
 
 app.use(express.json()); //jsonデータをパスしてくれる記述
 
