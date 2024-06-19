@@ -4,6 +4,8 @@ require('dotenv').config();  //.env ファイルを読み込むために、doten
 
 const path = require("path");
 const mongoose = require("mongoose");
+mongoose.set('useFindAndModify', false);
+
 const ejsMate = require("ejs-mate");
 const session = require('express-session')
 const flash = require('connect-flash');

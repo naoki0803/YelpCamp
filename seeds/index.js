@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+mongoose.set('useFindAndModify', false);
+
 const Campground = require("../models/campground");
 const cities = require("./cities");
 const seedHelpers = require("./seedHelpers");

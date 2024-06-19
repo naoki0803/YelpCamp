@@ -34,7 +34,7 @@ router.delete(`/:reviewId`, catchAsync(async (req, res) => {
     req.flash('success', 'レビューを削除しました');
     // Review.findById
     res.redirect(`/campgrounds/${id}`)
-    res.send('削除', req.body);
+    // res.send('削除', req.body);
 }))
 
 

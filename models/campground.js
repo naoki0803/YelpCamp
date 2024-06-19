@@ -1,5 +1,7 @@
 const { func } = require("joi");
 const mongoose = require("mongoose")
+mongoose.set('useFindAndModify', false);
+
 const { Schema } = mongoose;
 const Review = require('./review');
 
