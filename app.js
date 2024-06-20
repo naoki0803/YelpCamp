@@ -1,18 +1,18 @@
 const express = require("express"); //要npm i ejs
 const axios = require('axios');
 require('dotenv').config();  //.env ファイルを読み込むために、dotenv
-
 const path = require("path");
 const mongoose = require("mongoose");
 mongoose.set('useFindAndModify', false);
-
 const ejsMate = require("ejs-mate");
 const session = require('express-session')
 const flash = require('connect-flash');
-
 const Joi = require('joi');
 const ExpressError = require("./utils/ExpressError");
 const methodOverride = require("method-override");
+const passport = require('passport');
+const localStrategy = require('passport-local');
+const User = require("./models/user")
 
 const campgroundRoutes = require('./routes/campgrounds');
 const reviewRoutes = require('./routes/reviews');
@@ -54,6 +54,21 @@ const sessionConfig = {
     }
 }
 app.use(session(sessionConfig));
+
+app.use(passport.initialize());
+app.use(passport.session());    //expressのsessionの後に記載する必要がある。
+passport.use(new localStrategy(User.authenticate()));    //userモデルでpassportfLocalMongooseをプラグインすることで、aythenticate()というstaticメソッドが利用できる
+passport.serializeUser(User.serializeUser());   //passport.serializeUserで、sessionにどの用にuserの情報を渡すかを伝えている。
+passport.deserializeUser(User.deserializeUser());
+
+// {
+//     "localStrategy": "どの用なログインするか",
+//     "User.aythenticate": "どの用に認証するか",
+//     "User.serializeUser": "どの用にsessionに情報を保存するか",
+//     "User.deserializeUser": "どの用にsessionから情報を取り出すか"
+// }
+
+
 app.use(flash());
 app.use((req, res, next) => {
     res.locals.success = req.flash('success'); 
@@ -62,7 +77,6 @@ app.use((req, res, next) => {
 })
 
 app.use(express.json()); //jsonデータをパスしてくれる記述
-
 
 
 
@@ -86,6 +100,14 @@ app.get("/", async (req, res) => {
     // メインの処理を呼び出す
     const imageUrl = await fetchRandomImage();
     res.render("home", { imageUrl });
+});
+
+app.get('/fakeUser', async(req, res) => {
+    const user = new User({
+        email: 'hogehoge@example.com', username: 'hogehoge'
+    });
+    const newUser = await User.register(user, 'moge');
+    res.send(newUser);
 });
 
 //router
