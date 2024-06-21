@@ -14,6 +14,7 @@ const passport = require('passport');
 const localStrategy = require('passport-local');
 const User = require("./models/user")
 
+const userRoutes = require('./routes/users');
 const campgroundRoutes = require('./routes/campgrounds');
 const reviewRoutes = require('./routes/reviews');
 const exp = require("constants");
@@ -111,6 +112,7 @@ app.get('/fakeUser', async(req, res) => {
 });
 
 //router
+app.use('/', userRoutes);
 app.use('/campgrounds', campgroundRoutes);
 app.use('/campgrounds/:id/reviews', reviewRoutes);  //:idがあっても、reviews.jsでrouterを定義する際の引数にmergeParamsをtrueで記載が必要 
 
