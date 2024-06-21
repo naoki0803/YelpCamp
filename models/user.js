@@ -12,6 +12,17 @@ const userSchema = new Schema({
     }
 });
 
-userSchema.plugin(passportLocalMongoose);
+userSchema.plugin(passportLocalMongoose, {
+    errorMessages: {
+        MissingPasswordError: 'パスワードが指定されていません',
+        AttemptTooSoonError: 'アカウントは現在ロックされています。しばらくしてからもう一度お試しください',
+        TooManyAttemptsError: 'ログイン試行の失敗回数が多すぎるためアカウントがロックされました',
+        NoSaltValueStoredError: '認証できません。',
+        IncorrectPasswordError: 'パスワードまたはユーザー名が間違っています',
+        IncorrectUsernameError: 'パスワードまたはユーザー名が間違っています',
+        MissingUsernameError: 'ユーザー名が指定されていません',
+        UserExistsError: 'そのユーザー名は既に登録されています'
+    }
+});
 
 module.exports = mongoose.model('User', userSchema);
