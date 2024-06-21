@@ -6,7 +6,7 @@ router.get('/register', (req, res) => {
     res.render('users/register');
 });
 
-router.post('/register', (req, res) => {
+router.post('/register', async (req, res) => {
     res.send(req.body);
 });
 

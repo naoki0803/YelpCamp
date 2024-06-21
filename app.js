@@ -108,7 +108,7 @@ app.get('/fakeUser', async(req, res) => {
         email: 'hogehoge@example.com', username: 'hogehoge'
     });
     const newUser = await User.register(user, 'moge');
-    res.send(newUser);
+    res.send(newUser); 
 });
 
 //router
