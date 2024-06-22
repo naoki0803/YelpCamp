@@ -29,7 +29,11 @@ router.get('/login', (req, res) => {
 
 router.post('/login', passport.authenticate('local', { failureFlash: true, failureRedirect: '/login' }), (req, res) => {
     req.flash('success', 'おかえりなさい');
-    res.redirect('/campgrounds');
+    console.log("req.session.returnToの中身 or演算子の前", req.session);
+    const redirectUrl = req.session.returnTo || '/campgrounds';
+    delete req.session.returnTo;
+    res.send(req.session);
+    res.redirect(redirectUrl);
 });
 
 // router.get('/logout', (req, res) => {
