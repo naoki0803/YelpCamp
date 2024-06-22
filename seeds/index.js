@@ -50,12 +50,13 @@ async function fetchRandomImage() {
 const seedDB = async () => {
     await Campground.deleteMany({});
 
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 20; i++) {
         const randomCityIndex = Math.floor(Math.random() * cities.length)
         const description = campgroundDescriptions[Math.floor(Math.random() * campgroundDescriptions.length)]
         const price = Math.floor(Math.random() * 10000) + 1000;
         const imageUrl = await fetchRandomImage(); // 画像の非同期取得
         const camp = new Campground({
+            author: '66766778d7f589c2d0030246',
             title: `${sample(descriptors)}・${sample(places)}`,
             location: `${cities[randomCityIndex].prefecture}${cities[randomCityIndex].city}`,
             description: description,
