@@ -32,27 +32,34 @@
     </div>
     <div class="col-6">
         <h2>レビュー</h2>
-        <form class="mb-3 validated-form" action="/campgrounds/<%= campground.id %>/reviews" method="POST" novalidate>
-            <div class="mb-3">
-                <label class="form-label" for="raiting">評価</label>
-                <input class="form-range" type="range" min="1" max="5" name="review[raiting]" id="raiting">
-            </div>
-            <div class="mb-3">
-                <label class="form-label" for="body">コメント</label>
-                <textarea class="form-control" name="review[body]" id="body" cols="30" rows="3" required></textarea>
-                <div class="valid-feedback">
-                    Looks good!
+        <% if(currentUser){%>
+            <form class="mb-3 validated-form" action="/campgrounds/<%= campground.id %>/reviews" method="POST" novalidate>
+                <div class="mb-3">
+                    <label class="form-label" for="raiting">評価</label>
+                    <input class="form-range" type="range" min="1" max="5" name="review[raiting]" id="raiting">
                 </div>
-            </div>
-            <button class="btn btn-success">投稿する</button>
-        </form>
+                <div class="mb-3">
+                    <label class="form-label" for="body">コメント</label>
+                    <textarea class="form-control" name="review[body]" id="body" cols="30" rows="3" required></textarea>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                </div>
+                <button class="btn btn-success">投稿する</button>
+            </form>
+        <% } %>
+
         <% for (let review of campground.reviews){ %>
             <div class="card mb-3">
                 <div class="card-body">
                     <h5 class="card-title">評価:<%= review.raiting %></h5>
+                    <h6 class="card-subtitle mb-2 text-muted"><%= review.author.username %></h6>
                     <p class="card-text">コメント:<%= review.body %></p>
                     <form action="/campgrounds/<%= campground._id %>/reviews/<%= review._id %>?_method=DELETE" method="POST">
+                        
+                        <% if(currentUser && review.author.equals(currentUser._id)) {%>
                         <button class="btn btn-sm btn-danger">削除する</button>
+                        <% } %>
                     </form>
                 </div> 
             </div>
