@@ -5,6 +5,7 @@ const ExpressError = require("../utils/ExpressError");
 const Campground = require("../models/campground");
 const { campgroundSchema } = require('../schemas');
 const { isLoggedIn } = require('../middleware');
+const mongoose = require("mongoose");
 
 const validateCampground = (req, res, next) => {
     // const campgroundSchema = Joi.object({
@@ -50,7 +51,7 @@ router.post("/", isLoggedIn, validateCampground, catchAsync(async (req, res) => 
 //詳細ページ
 router.get("/:id", catchAsync(async (req, res) => {
     const campground = await Campground.findById(req.params.id).populate('reviews').populate('author');
-    console.log(campground);
+    // console.log(campground);
     if (!campground) {
         req.flash('error', 'キャンプ場は見つかりませんでした');
         return res.redirect("/campgrounds")
@@ -60,20 +61,39 @@ router.get("/:id", catchAsync(async (req, res) => {
 
 //編集ページ
 router.get("/:id/edit", isLoggedIn, catchAsync(async (req, res) => {
-    const campground = await Campground.findById(req.params.id);
+    const { id } = req.params;
+    const campground = await Campground.findById(id);
     if (!campground) {
         req.flash('error', 'キャンプ場は見つかりませんでした');
         res.redirect('/campgrounds')
-
+    }
+    // campgroundを作成したユーザーと、ログインしているuserが不一致の場合、更新不可
+    if (!campground.author.equals(req.user._id)) {
+        req.flash('error', '更新する権限がありません');
+        return res.redirect(`/campgrounds/${id}`);
     }
     res.render("campgrounds/edit", { campground })
 }));
 
 router.put("/:id", isLoggedIn, validateCampground, catchAsync(async (req, res) => {
-    const { id } = req.params
-    const campground = await Campground.findByIdAndUpdate(id, { ...req.body.campground }, { useFindAndModify: false })
+    const { id } = req.params;
+
+    // mongoose.Types.ObjectId(id)は、文字列として与えられたidをMongoDBのObjectId型に変換します。
+    //MongoDBのIDは通常、ObjectId型の12バイトのバイナリデータです。この変換が必要なのは、検索のために正しいデータ型を確保するためです。
+    // const campground = await Campground.findById(mongoose.Types.ObjectId(id));
+    const campground = await Campground.findById(id);
+    // console.log("id:", id, "typeof:", typeof(id));                                                      //idはstringで定義されている            
+    // console.log("mongoose.Types.ObjectId(id):", mongoose.Types.ObjectId(id)), "typeof:", typeof(mongoose.Types.ObjectId(id)));   //mongoose.Types.ObjectId(id)でMongoDBのObjectId型に変換
+    // mongoose.Types.ObjectId(id)で記述しないとエラーになっていたが、なぜか自然解消(mongooseが起動してなかったとか？？)なので、通常のidで取得するように変更
+
+    //campgroundを作成したユーザーと、ログインしているuserが不一致の場合、更新不可
+    if (!campground.author.equals(req.user._id)) {
+        req.flash('error', '更新する権限がありません');
+        return res.redirect(`/campgrounds/${id}`);
+    }
+    const camp = await Campground.findByIdAndUpdate(id, { ...req.body.campground }, { useFindAndModify: false })
     req.flash('success', 'キャンプ場を更新しました');
-    res.redirect(`/campgrounds/${campground._id}`);
+    res.redirect(`/campgrounds/${camp._id}`);
 }));
 
 //削除
