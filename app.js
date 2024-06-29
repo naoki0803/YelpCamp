@@ -69,7 +69,6 @@ passport.deserializeUser(User.deserializeUser());
 //     "User.deserializeUser": "どの用にsessionから情報を取り出すか"
 // }
 
-
 app.use(flash());
 app.use((req, res, next) => {
     // console.log("appjsの中身(returnToの値がある)", req.session);
@@ -80,8 +79,6 @@ app.use((req, res, next) => {
 })
 
 app.use(express.json()); //jsonデータをパスしてくれる記述
-
-
 
 // Unsplash APIリクエスト用の関数
 const fetchRandomImage = async () => {
