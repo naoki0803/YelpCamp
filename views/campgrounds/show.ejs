@@ -1,4 +1,5 @@
 <% layout("layouts/boilerplate")%>
+<link rel="stylesheet" href="/stylesheets/stars.css">
 
 <div class="row">
     <div class="col-6">
@@ -34,10 +35,27 @@
         <h2>レビュー</h2>
         <% if(currentUser){%>
             <form class="mb-3 validated-form" action="/campgrounds/<%= campground.id %>/reviews" method="POST" novalidate>
-                <div class="mb-3">
-                    <label class="form-label" for="raiting">評価</label>
-                    <input class="form-range" type="range" min="1" max="5" name="review[raiting]" id="raiting">
+                <div class="">
+                    <!-- 
+                        <label class="form-label" for="raiting">評価</label>
+                        <input class="form-range" type="range" min="1" max="5" name="review[raiting]" id="raiting">
+                    -->
+                    <fieldset class="starability-basic">
+                        <input type="radio" id="first-rate1" name="review[raiting]" value="1" checked/>
+                        <label for="first-rate1" title="1">評価1</label>
+                        <input type="radio" id="first-rate2" name="review[raiting]" value="2" />
+                        <label for="first-rate2" title="2">評価2</label>
+                        <input type="radio" id="first-rate3" name="review[raiting]" value="3" />
+                        <label for="first-rate3" title="3">評価3</label>
+                        <input type="radio" id="first-rate4" name="review[raiting]" value="4" />
+                        <label for="first-rate4" title="4">評価4</label>
+                        <input type="radio" id="first-rate5" name="review[raiting]" value="5" />
+                        <label for="first-rate5" title="5">評価5</label>
+                    </fieldset>
                 </div>
+
+
+  
                 <div class="mb-3">
                     <label class="form-label" for="body">コメント</label>
                     <textarea class="form-control" name="review[body]" id="body" cols="30" rows="3" required></textarea>
@@ -52,7 +70,10 @@
         <% for (let review of campground.reviews){ %>
             <div class="card mb-3">
                 <div class="card-body">
-                    <h5 class="card-title">評価:<%= review.raiting %></h5>
+                    <h5 class="card-title"><%= review.author.name %></h5>
+                    <p class="starability-result" data-rating="<%= review.raiting %>">
+                        Rated: <%= review.raiting %> stars
+                    </p>
                     <h6 class="card-subtitle mb-2 text-muted"><%= review.author.username %></h6>
                     <p class="card-text">コメント:<%= review.body %></p>
                     <form action="/campgrounds/<%= campground._id %>/reviews/<%= review._id %>?_method=DELETE" method="POST">
