@@ -60,6 +60,7 @@ module.exports.rendeerEditForm = async (req, res) => {
 };
 
 module.exports.update = async (req, res) => {
+    console.log(req.body);
     const { id } = req.params;
     // // isAuthorとして別定義した為以下コメントアウト
     // // mongoose.Types.ObjectId(id)は、文字列として与えられたidをMongoDBのObjectId型に変換します。
