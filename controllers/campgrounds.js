@@ -75,9 +75,12 @@ module.exports.update = async (req, res) => {
     //     req.flash('error', '更新する権限がありません');
     //     return res.redirect(`/campgrounds/${id}`);
     // }
-    const camp = await Campground.findByIdAndUpdate(id, { ...req.body.campground }, { useFindAndModify: false })
+    const campground = await Campground.findByIdAndUpdate(id, { ...req.body.campground }, { useFindAndModify: false })
+    const imgs = req.files.map(f => ({ url: f.path, filename: f.filename }));
+    campground.images.push(...imgs);
+    await campground.save();
     req.flash('success', 'キャンプ場を更新しました');
-    res.redirect(`/campgrounds/${camp._id}`);
+    res.redirect(`/campgrounds/${campground._id}`);
 }
 
 module.exports.deleteCampground = async (req, res) => {

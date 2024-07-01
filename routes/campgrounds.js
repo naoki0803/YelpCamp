@@ -19,7 +19,7 @@ router.route("/:id")
     //Get詳細細ページ
     .get(catchAsync(campgrounds.showCampground))
     //put編集
-    .put(isLoggedIn, isAuthor, validateCampground, catchAsync(campgrounds.update))
+    .put(isLoggedIn, isAuthor, upload.array('image'),validateCampground, catchAsync(campgrounds.update))
     //削除
     .delete(isLoggedIn, isAuthor, catchAsync(campgrounds.deleteCampground));
 
