@@ -1,3 +1,7 @@
+if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').config();
+}
+
 const express = require("express"); //要npm i ejs
 const axios = require('axios');
 require('dotenv').config();  //.env ファイルを読み込むために、dotenv
@@ -49,9 +53,9 @@ const sessionConfig = {
     secret: 'mysecret',
     resave: false,
     saveUninitialized: true,
-        cookie: {
-            httpOnly: true,
-            maxAge: 1000 * 60 * 60 * 24 * 7 //1week
+    cookie: {
+        httpOnly: true,
+        maxAge: 1000 * 60 * 60 * 24 * 7 //1week
     }
 }
 app.use(session(sessionConfig));
@@ -73,8 +77,8 @@ app.use(flash());
 app.use((req, res, next) => {
     // console.log("appjsの中身(returnToの値がある)", req.session);
     res.locals.currentUser = req.user;
-    res.locals.success = req.flash('success'); 
-    res.locals.error = req.flash('error'); 
+    res.locals.success = req.flash('success');
+    res.locals.error = req.flash('error');
     next();
 })
 
@@ -102,12 +106,12 @@ app.get("/", async (req, res) => {
     res.render("home", { imageUrl });
 });
 
-app.get('/fakeUser', async(req, res) => {
+app.get('/fakeUser', async (req, res) => {
     const user = new User({
         email: 'hogehoge@example.com', username: 'hogehoge'
     });
     const newUser = await User.register(user, 'moge');
-    res.send(newUser); 
+    res.send(newUser);
 });
 
 //router

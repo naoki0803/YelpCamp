@@ -11,14 +11,14 @@ module.exports.renderNew = (req, res) => {
 
 module.exports.showCampground = async (req, res) => {
     const campground = await Campground.findById(req.params.id)
-    // .populate('reviews')
-    .populate({
-        path: 'reviews',
-        populate: {
-            path: 'author'
-        }
-    })
-    .populate('author');
+        // .populate('reviews')
+        .populate({
+            path: 'reviews',
+            populate: {
+                path: 'author'
+            }
+        })
+        .populate('author');
     // console.log(campground);
     if (!campground) {
         req.flash('error', 'キャンプ場は見つかりませんでした');
@@ -31,10 +31,13 @@ module.exports.showCampground = async (req, res) => {
 // app.use(express.urlencoded({ extended: true })); 
 // app.use(express.json()); //jsonデータをパスしてくれる記述
 module.exports.createCampground = async (req, res) => {
+
     // if(!req.body.Campgroundf){ throw new ExpressError('不正なキャンプ場のデータです', 400);  } 
     const campground = new Campground(req.body.campground);
+    campground.images = req.files.map(f => ({ url: f.path, filename: f.filename }));
     campground.author = req.user._id;
     await campground.save();
+    console.log(campground);
     req.flash('success', '新しいキャンプ場を登録しました');
     res.redirect(`/campgrounds/${campground._id}`);
 };

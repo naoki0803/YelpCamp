@@ -1,4 +1,4 @@
-const { func } = require("joi");
+const { func, string } = require("joi");
 const mongoose = require("mongoose")
 mongoose.set('useFindAndModify', false);
 
@@ -8,7 +8,13 @@ const Review = require('./review');
 
 const campgroundSchema = new Schema({
     title: String,
-    image: String,
+    // image: String,  //cloudinaryに対応させる為コメントアウト
+    images: [
+        {
+            url: String,
+            filename: String
+        }
+    ],
     price: Number,
     description: String,
     location: String,

@@ -3,20 +3,15 @@ const router = express.Router();
 const campgrounds = require('../controllers/campgrounds');
 const catchAsync = require("../utils/catchAsync");
 const { isLoggedIn, validateCampground, isAuthor } = require('../middleware');
-const multer = require('multer')
-const upload = multer({ dest: 'uploads/' })
-
+const multer = require('multer');
+const { storage } = require('../cloudinary');
+const upload = multer({ storage });
 
 router.route("/")   //router.httpMethod(getやpostなど)の様な記述で1つづつRouterを定義もできるが、同一のパスであれば、router.routeで同一のルートをグルーピングできる。個別に定義していたパス(touter.get("/")の("/")の部分は必要なくなる
     //一覧ページ 
     .get(catchAsync(campgrounds.index))
     //Post新規登録
-    // .post(isLoggedIn, validateCampground, catchAsync(campgrounds.createCampground));
-    .post(upload.array('image'), (req, res) => {
-        console.log(req.body, req.files);
-        res.send('リクエストを受け付けました');;
-    });
-
+    .post(isLoggedIn, upload.array('image'), validateCampground, catchAsync(campgrounds.createCampground));
 //Get新規登録
 router.get("/new", isLoggedIn, campgrounds.renderNew);
 
