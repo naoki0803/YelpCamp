@@ -26,15 +26,6 @@ app.use(express.json()); //jsonデータをパスしてくれる記述
         </div>
 
         <div class="mb-3">
-            <!-- <label class="form-label" for="image">画像URL</label>
-            <input class="form-control" type="text" name="campground[image]" id="image" required>
-            <div class="valid-feedback">
-                OK!
-            </div> -->
-            <input type="file" name="image" id="" multiple>
-        </div>
-
-        <div class="mb-3">
             <label class="form-label" for="price">価格</label>
             <div class="input-group">
                 <span class="input-group-text" id="price-label">¥</span>
@@ -64,6 +55,12 @@ app.use(express.json()); //jsonデータをパスしてくれる記述
             <option value="spider">Spider</option>
             <option value="goldfish">Goldfish</option>
         </select> -->
+
+        <div class="mb-3">
+            <label for="image" class="form-label">画像のアップロード</label>
+            <input class="form-control" type="file" id="image" name="image" multiple>
+        </div>
+        
         <div class="mb-3">
             <button class="btn btn-success" type="submit">登録</button>
         </div>
