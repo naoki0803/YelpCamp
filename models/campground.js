@@ -5,16 +5,17 @@ mongoose.set('useFindAndModify', false);
 const { Schema } = mongoose;
 const Review = require('./review');
 
-
+const imageSchema = new Schema({
+    url: String,
+    filename: String
+})
+imageSchema.virtual('thumbnail').get(function () {
+    return this.url.replace('/upload', '/upload/w_200');
+})
 const campgroundSchema = new Schema({
     title: String,
     // image: String,  //cloudinaryに対応させる為コメントアウト
-    images: [
-        {
-            url: String,
-            filename: String
-        }
-    ],
+    images: [imageSchema],
     price: Number,
     description: String,
     location: String,
