@@ -46,7 +46,7 @@ map.on('load', () => {
             'circle-radius': [
                 'step',
                 ['get', 'point_count'],
-                15, //次の項目｢5｣までなら、サイズを15にする
+                20, //次の項目｢5｣までなら、サイズを15にする
                 5,  //clusterの数が｢5｣未満
                 25, //size
                 15, //閾値
@@ -104,10 +104,8 @@ map.on('load', () => {
     // the location of the feature, with
     // description HTML from its properties.
     map.on('click', 'unclustered-point', (e) => {
+        const { popupMarkup } = e.features[0].properties;
         const coordinates = e.features[0].geometry.coordinates.slice();
-        const mag = e.features[0].properties.mag;
-        const tsunami =
-            e.features[0].properties.tsunami === 1 ? 'yes' : 'no';
 
         // Ensure that if the map is zoomed out such that
         // multiple copies of the feature are visible, the
@@ -118,9 +116,7 @@ map.on('load', () => {
 
         new mapboxgl.Popup()
             .setLngLat(coordinates)
-            .setHTML(
-                `magnitude: ${mag}<br>Was there a tsunami?: ${tsunami}`
-            )
+            .setHTML(popupMarkup)
             .addTo(map);
     });
 
