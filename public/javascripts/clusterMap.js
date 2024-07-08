@@ -1,7 +1,8 @@
 mapboxgl.accessToken = mapToken;
 const map = new mapboxgl.Map({
     container: 'map',
-    style: 'mapbox://styles/mapbox/dark-v10',
+    // style: 'mapbox://styles/light-v10',
+    style: 'mapbox://styles/mapbox/light-v10',
     center: [138, 39],
     zoom: 3
 });
@@ -36,20 +37,20 @@ map.on('load', () => {
             'circle-color': [
                 'step',
                 ['get', 'point_count'],
-                '#51bbd6',
-                100,
-                '#f1f075',
-                750,
-                '#f28cb1'
+                'blue',
+                5,
+                'orange',
+                15,
+                'red'
             ],
             'circle-radius': [
                 'step',
                 ['get', 'point_count'],
-                20,
-                100,
-                30,
-                750,
-                40
+                15, //次の項目｢5｣までなら、サイズを15にする
+                5,  //clusterの数が｢5｣未満
+                25, //size
+                15, //閾値
+                30
             ]
         }
     });
