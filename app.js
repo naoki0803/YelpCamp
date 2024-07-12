@@ -17,8 +17,10 @@ const methodOverride = require("method-override");
 const passport = require('passport');
 const localStrategy = require('passport-local');
 const User = require("./models/user")
-
+const helmet = require('helmet')  //セキュリティ関連のhttpheaderを不要してくれる
 const mongoSanitize = require('express-mongo-sanitize');
+
+
 
 
 const userRoutes = require('./routes/users');
@@ -81,6 +83,9 @@ passport.deserializeUser(User.deserializeUser());
 // }
 
 app.use(flash());
+app.use(helmet({
+    contentSecurityPolicy: false
+}));  //引数無しで実行するとdefaultで11個のミドルウェアを実行する
 app.use((req, res, next) => {
     console.log(req.query);
     // console.log("appjsの中身(returnToの値がある)", req.session);
@@ -90,7 +95,45 @@ app.use((req, res, next) => {
     next();
 })
 
+const scriptSrcUrls = [
+    'https://api.mapbox.com',
+    'https://cdn.jsdelivr.net'
+];
+const styleSrcUrls = [
+    'https://api.mapbox.com',
+    'https://cdn.jsdelivr.net'
+];
+const connectSrcUrls = [
+    'https://api.mapbox.com',
+    'https://*.tiles.mapbox.com',
+    'https://events.mapbox.com'
+];
+const fontSrcUrls = [];
+const imgSrcUrls = [
+    `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/`,
+    'https://images.unsplash.com'
+];
+
+//helmet.contentSecurityPolicy()を定義する事で、記載しているsrc元の情報を参照しする事ができる。
+//https://www.npmjs.com/package/helmet#content-security-policy
+app.use(helmet.contentSecurityPolicy({
+    directives: {
+        defaultSrc: [],
+        connectSrc: ["'self'", ...connectSrcUrls],
+        scriptSrc: ["'unsafe-inline'", "'self'", ...scriptSrcUrls],
+        styleSrc: ["'self'", "'unsafe-inline'", ...styleSrcUrls],
+        workerSrc: ["'self'", "blob:"],
+        childSrc: ["blob:"],
+        objectSrc: [],
+        imgSrc: ["'self'", 'blob:', 'data:', ...imgSrcUrls],
+        fontSrc: ["'self'", ...fontSrcUrls]
+    }
+}));
+
 app.use(express.json()); //jsonデータをパスしてくれる記述
+
+
+
 
 // Unsplash APIリクエスト用の関数
 const fetchRandomImage = async () => {
