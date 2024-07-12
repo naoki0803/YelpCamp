@@ -60,7 +60,8 @@ const sessionConfig = {
     resave: false,
     saveUninitialized: true,
     cookie: {
-        httpOnly: true,
+        httpOnly: true, //sessionに関連したCookieをhttp経由出ないと接続できなくするので、クライアントサイドのjavascriptからCookieにアクセスできない
+        // secure: true,   //httpsでないと、Cookieのやり取りをしなくなる(今回の開発環境はhttp通信のため、コメントアウトしないとログインなどsesseionを利用している部分が機能しなくなる)
         maxAge: 1000 * 60 * 60 * 24 * 7 //1week
     }
 }
