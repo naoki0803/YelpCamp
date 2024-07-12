@@ -3,7 +3,10 @@
     <div class="offset-3 col-6">
         <div class="alert alert-danger" role="alert">
             <h4 class="alert-heading"><%= err %></h4>
+            <!-- 本番環境では、err.stackは表示しない表に変更 errのみ表示される -->
+            <% if (process.env.NODE_ENV !== 'production') { %>
             <p><%= err.stack %></p>
+            <% } %>
         </div>
     </div>
 </div>
