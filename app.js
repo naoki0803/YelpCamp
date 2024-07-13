@@ -38,7 +38,6 @@ const MongoStore = require('connect-mongo');
 // const dburl = process.env.DB_URL;
 
 const dburl = process.env.DB_URL || 'mongodb://127.0.0.1:27017/yelp-camp';
-
 mongoose.connect(dburl,
     { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true }
 )
@@ -113,14 +112,6 @@ app.use(flash());
 app.use(helmet({
     contentSecurityPolicy: false
 }));  //引数無しで実行するとdefaultで11個のミドルウェアを実行する
-app.use((req, res, next) => {
-    console.log(req.query);
-    // console.log("appjsの中身(returnToの値がある)", req.session);
-    res.locals.currentUser = req.user;
-    res.locals.success = req.flash('success');
-    res.locals.error = req.flash('error');
-    next();
-})
 
 const scriptSrcUrls = [
     'https://api.mapbox.com',
@@ -157,9 +148,18 @@ app.use(helmet.contentSecurityPolicy({
     }
 }));
 
-app.use(express.json()); //jsonデータをパスしてくれる記述
+app.use((req, res, next) => {
+    // console.log(req.query);
+    // console.log("appjsの中身(returnToの値がある)", req.session);
+    // console.log("Current User:", req.user);  // req.user が正しく設定されているか確認
+    res.locals.currentUser = req.user;
+    res.locals.success = req.flash('success');
+    res.locals.error = req.flash('error');
+    next();
+})
 
 
+// app.use(express.json()); //jsonデータをパスしてくれる記述
 
 
 // Unsplash APIリクエスト用の関数
@@ -179,9 +179,11 @@ const fetchRandomImage = async () => {
 
 //HomePege
 app.get("/", async (req, res) => {
+    // console.log("ルートパス", req.user);  // req.user が正しく設定されているか確認
     // メインの処理を呼び出す
     const imageUrl = await fetchRandomImage();
     res.render("home", { imageUrl });
+
 });
 
 app.get('/fakeUser', async (req, res) => {
