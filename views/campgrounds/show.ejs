@@ -71,19 +71,19 @@
                     novalidate>
                     <div class="">
                         <!-- 
-                        <label class="form-label" for="raiting">評価</label>
-                        <input class="form-range" type="range" min="1" max="5" name="review[raiting]" id="raiting">
+                        <label class="form-label" for="rating">評価</label>
+                        <input class="form-range" type="range" min="1" max="5" name="review[rating]" id="rating">
                     -->
                         <fieldset class="starability-basic">
-                            <input type="radio" id="first-rate1" name="review[raiting]" value="1" checked />
+                            <input type="radio" id="first-rate1" name="review[rating]" value="1" checked />
                             <label for="first-rate1" title="1">評価1</label>
-                            <input type="radio" id="first-rate2" name="review[raiting]" value="2" />
+                            <input type="radio" id="first-rate2" name="review[rating]" value="2" />
                             <label for="first-rate2" title="2">評価2</label>
-                            <input type="radio" id="first-rate3" name="review[raiting]" value="3" />
+                            <input type="radio" id="first-rate3" name="review[rating]" value="3" />
                             <label for="first-rate3" title="3">評価3</label>
-                            <input type="radio" id="first-rate4" name="review[raiting]" value="4" />
+                            <input type="radio" id="first-rate4" name="review[rating]" value="4" />
                             <label for="first-rate4" title="4">評価4</label>
-                            <input type="radio" id="first-rate5" name="review[raiting]" value="5" />
+                            <input type="radio" id="first-rate5" name="review[rating]" value="5" />
                             <label for="first-rate5" title="5">評価5</label>
                         </fieldset>
                     </div>
@@ -108,8 +108,8 @@
                                 <h5 class="card-title">
                                     <%= review.author.name %>
                                 </h5>
-                                <p class="starability-result" data-rating="<%= review.raiting %>">
-                                    Rated: <%= review.raiting %> stars
+                                <p class="starability-result" data-rating="<%= review.rating %>">
+                                    Rated: <%= review.rating %> stars
                                 </p>
                                 <h6 class="card-subtitle mb-2 text-muted">
                                     <%= review.author.username %>
