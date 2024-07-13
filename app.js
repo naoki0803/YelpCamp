@@ -28,11 +28,18 @@ const campgroundRoutes = require('./routes/campgrounds');
 const reviewRoutes = require('./routes/reviews');
 const exp = require("constants");
 const { truncate } = require("fs");
-const dburl = process.env.DB_URL;
-//'mongodb://127.0.0.1:27017/<DBの場所をここで指定できるので、以下の場合movieAppというディレクトリに保存される>>
-// mongoose.connect('mongodb://127.0.0.1:27017/yelp-camp',
 
-mongoose.connect(dburl ,
+const MongoStore = require('connect-mongo');
+
+//開発環境
+// mongoose.connect('mongodb://127.0.0.1:27017/yelp-camp',
+//'mongodb://127.0.0.1:27017/<DBの場所をここで指定できるので、以下の場合movieAppというディレクトリに保存される>>
+const dburl = 'mongodb://127.0.0.1:27017/yelp-camp';
+
+//本番環境
+// const dburl = process.env.DB_URL;
+
+mongoose.connect(dburl,
     { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true }
 )
     .then(() => {
@@ -59,7 +66,21 @@ app.use(mongoSanitize({
     replaceWith: '_',
 }));
 
+// npm connect-mongo https://www.npmjs.com/package/connect-mongo
+const store = MongoStore.create({
+    mongoUrl: dburl,
+    crypto: {
+        secret: ' mysecret'
+    },
+    touchAfter : 24 * 3600 //sessionに変更がなければ1日間はsessionを保存しにいかない設定
+});
+
+store.on('error', e => {
+    console.log('セッションストアエラー', e);
+})
+
 const sessionConfig = {
+    store,
     secret: 'mysecret',
     resave: false,
     saveUninitialized: true,
