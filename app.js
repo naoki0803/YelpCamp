@@ -34,10 +34,10 @@ const MongoStore = require('connect-mongo');
 //開発環境
 // mongoose.connect('mongodb://127.0.0.1:27017/yelp-camp',
 //'mongodb://127.0.0.1:27017/<DBの場所をここで指定できるので、以下の場合movieAppというディレクトリに保存される>>
-const dburl = 'mongodb://127.0.0.1:27017/yelp-camp';
-
 //本番環境
 // const dburl = process.env.DB_URL;
+
+const dburl = process.env.DB_URL || 'mongodb://127.0.0.1:27017/yelp-camp';
 
 mongoose.connect(dburl,
     { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true }
@@ -66,11 +66,14 @@ app.use(mongoSanitize({
     replaceWith: '_',
 }));
 
+
+const secret = process.env.SECRET || 'mysecret'
+
 // npm connect-mongo https://www.npmjs.com/package/connect-mongo
 const store = MongoStore.create({
     mongoUrl: dburl,
     crypto: {
-        secret: ' mysecret'
+        secret
     },
     touchAfter : 24 * 3600 //sessionに変更がなければ1日間はsessionを保存しにいかない設定
 });
@@ -79,9 +82,10 @@ store.on('error', e => {
     console.log('セッションストアエラー', e);
 })
 
+
 const sessionConfig = {
     store,
-    secret: 'mysecret',
+    secret,
     resave: false,
     saveUninitialized: true,
     cookie: {
