@@ -28,9 +28,11 @@ const campgroundRoutes = require('./routes/campgrounds');
 const reviewRoutes = require('./routes/reviews');
 const exp = require("constants");
 const { truncate } = require("fs");
-
+const dburl = process.env.DB_URL;
 //'mongodb://127.0.0.1:27017/<DBの場所をここで指定できるので、以下の場合movieAppというディレクトリに保存される>>
-mongoose.connect('mongodb://127.0.0.1:27017/yelp-camp',
+// mongoose.connect('mongodb://127.0.0.1:27017/yelp-camp',
+
+mongoose.connect(dburl ,
     { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true }
 )
     .then(() => {
