@@ -211,7 +211,9 @@ app.use((err, req, res, next) => {
     res.status(statusCode).render('error', { err })
 });
 
+
+const port = process.env.PORT || 3000
 //サーバ接続
-app.listen(3000, () => {
-    console.log("サーバーをPort3000で受付中")
+app.listen(port, () => {
+    console.log(`サーバーをPort${port}で受付中`);
 })
